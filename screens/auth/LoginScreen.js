@@ -14,7 +14,7 @@ import { Background } from "../../components/Background";
 import { MainBtn } from "../../components/MainBtn";
 
 const initialState = {
-  login: "",
+  email: "",
   password: "",
 };
 
@@ -58,17 +58,17 @@ export const LoginScreen = () => {
                       ...styles.input,
                       marginBottom: 16,
                       borderColor:
-                        focusedInput === "login" ? "#FF6C00" : "#E8E8E8",
+                        focusedInput === "email" ? "#FF6C00" : "#E8E8E8",
                     }}
-                    value={form.login}
-                    placeholder="Логін"
+                    value={form.email}
+                    placeholder="Адреса електронної пошти"
                     placeholderTextColor="#BDBDBD"
                     onFocus={() => {
                       setIsShownKeyboard(true);
-                      handleInputFocus("login");
+                      handleInputFocus("email");
                     }}
                     onChangeText={(value) =>
-                      setForm((prevState) => ({ ...prevState, login: value }))
+                      setForm((prevState) => ({ ...prevState, email: value }))
                     }
                   />
 
