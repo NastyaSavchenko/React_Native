@@ -22,7 +22,7 @@ const initialState = {
   password: "",
 };
 
-export const RegistrationScreen = () => {
+export const RegistrationScreen = ({ navigation }) => {
   const [form, setForm] = useState(initialState);
   const [isShownKeyboard, setIsShownKeyboard] = useState(false);
   const [isShownPassword, setIsShownPassword] = useState(true);
@@ -36,6 +36,7 @@ export const RegistrationScreen = () => {
   const onSubmit = () => {
     console.log(form);
     setForm(initialState);
+    navigation.navigate("Home");
   };
 
   const handleInputFocus = (inputName) => {
@@ -132,7 +133,7 @@ export const RegistrationScreen = () => {
                     />
                     <TouchableOpacity
                       activeOpacity={0.8}
-                      style={{ position: "absolute", right: 16, top: 17  }}
+                      style={{ position: "absolute", right: 16, top: 17 }}
                       onPress={() => setIsShownPassword(!isShownPassword)}
                     >
                       <Text style={styles.link}>Показати</Text>
@@ -143,7 +144,10 @@ export const RegistrationScreen = () => {
                 <TouchableOpacity
                   activeOpacity={0.8}
                   style={{ marginTop: 16 }}
-                  onPress={() => keyboardHide()}
+                  onPress={() => {
+                    keyboardHide();
+                    navigation.navigate("Login");
+                  }}
                 >
                   <Text style={styles.link}>Вже є обліковий запис? Увійти</Text>
                 </TouchableOpacity>

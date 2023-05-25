@@ -18,7 +18,7 @@ const initialState = {
   password: "",
 };
 
-export const LoginScreen = () => {
+export const LoginScreen = ({ navigation }) => {
   const [form, setForm] = useState(initialState);
   const [isShownKeyboard, setIsShownKeyboard] = useState(false);
   const [isShownPassword, setIsShownPassword] = useState(true);
@@ -32,6 +32,8 @@ export const LoginScreen = () => {
   const onSubmit = () => {
     console.log(form);
     setForm(initialState);
+
+    navigation.navigate("Home");
   };
 
   const handleInputFocus = (inputName) => {
@@ -113,7 +115,10 @@ export const LoginScreen = () => {
                 <TouchableOpacity
                   activeOpacity={0.8}
                   style={{ marginTop: 16 }}
-                  onPress={() => keyboardHide()}
+                  onPress={() => {
+                    keyboardHide();
+                    navigation.navigate("Registration");
+                  }}
                 >
                   <Text style={styles.link}>
                     Немає облікового запису? Зареєструватись
