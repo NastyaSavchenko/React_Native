@@ -19,7 +19,7 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 
-export const CreatePostsScreen = () => {
+export const CreatePostsScreen = ({ navigation }) => {
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const [cameraRef, setCameraRef] = useState(null);
   const [photoUri, setPhotoUri] = useState(null);
@@ -59,10 +59,10 @@ export const CreatePostsScreen = () => {
   };
 
   const onSubmit = () => {
-     if (!isDataComplete) {
+    if (!isDataComplete) {
       Alert.alert("Будь ласка, завантажте фото та заповніть усі поля.");
       return;
-    } 
+    }
 
     const data = {
       photo: photoUri,
@@ -74,9 +74,9 @@ export const CreatePostsScreen = () => {
     setPhotoUri("");
     setTitleText("");
     setPlaceText("");
-  };
 
-  
+    navigation.navigate("Публікації");
+  };
 
   return (
     <TouchableWithoutFeedback onPress={hideKeyboard}>
@@ -125,7 +125,7 @@ export const CreatePostsScreen = () => {
               style={styles.locationIcon}
             />
             <TextInput
-                style={{ ...styles.input, paddingLeft: 28 }}
+              style={{ ...styles.input, paddingLeft: 28 }}
               placeholder="Місцевість..."
               placeholderTextColor="#BDBDBD"
               onFocus={() => setIsKeyboardVisible(true)}

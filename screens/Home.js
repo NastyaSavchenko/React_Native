@@ -42,18 +42,7 @@ export const Home = ({ navigation }) => {
               color={focused ? "#ffffff" : "#BDBDBD"}
             />
           ),
-          headerRight: () => (
-            <TouchableOpacity style={{ marginRight: 16 }} activeOpacity={0.8}>
-              <MaterialIcons name="logout" size={24} color="#BDBDBD" />
-            </TouchableOpacity>
-          ),
-          headerTitleAlign: "center",
-          headerTitleStyle: {
-            fontFamily: "RobotoMedium",
-            fontSize: 17,
-            lineHeight: 22,
-            color: "#212121",
-          },
+          headerShown: false,
         }}
         name="Публікації"
         component={PostsScreen}

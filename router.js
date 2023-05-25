@@ -12,7 +12,7 @@ import { RegistrationScreen } from "./screens/auth/RegistrationScreen";
 import { LoginScreen } from "./screens/auth/LoginScreen";
 import { Home } from "./screens/Home";
 
-import { PostsScreen } from "./screens/main/PostsScreen";
+import { InfoScreen } from "./screens/info/InfoScreen";
 import { CreatePostsScreen } from "./screens/main/CreatePostsScreen";
 import { ProfileScreen } from "./screens/main/ProfileScreen";
 
@@ -78,8 +78,8 @@ export const useRoute = (Auth) => {
             </TouchableOpacity>
           ),
         }}
-        name="PostsScreen"
-        component={PostsScreen}
+        name="InfoScreen"
+        component={InfoScreen}
       />
       <MainTabs.Screen
         options={{
