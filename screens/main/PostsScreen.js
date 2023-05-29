@@ -1,13 +1,12 @@
 import React from "react";
-import { TouchableOpacity } from "react-native";
 
 import { createStackNavigator } from "@react-navigation/stack";
 import { AntDesign } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
 
 import { InfoScreen } from "../info/InfoScreen";
 import { CommentsScreen } from "../info/CommentsScreen";
 import { MapScreen } from "../info/MapScreen";
+import { Logout } from "../../components/Lofout";
 
 const PostScreen = createStackNavigator();
 
@@ -26,14 +25,7 @@ export const PostsScreen = () => {
             />
           ),
 
-          headerRight: () => (
-            <TouchableOpacity
-              style={{ marginRight: 16 }}
-              activeOpacity={0.8}
-            >
-              <MaterialIcons name="logout" size={24} color="#BDBDBD" />
-            </TouchableOpacity>
-          ),
+          headerRight: () => <Logout styles={{ marginRight: 16 }} />,
           headerTitleAlign: "center",
           headerTitleStyle: {
             fontFamily: "RobotoMedium",

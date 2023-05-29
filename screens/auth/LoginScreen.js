@@ -9,12 +9,14 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
+import { useDispatch } from "react-redux";
 import { useState } from "react";
+import { authSignInUser } from "../../redux/auth/authOperations";
 import { Background } from "../../components/Background";
 import { MainBtn } from "../../components/MainBtn";
 
 const initialState = {
-  email: "",
+  userEmail: "",
   password: "",
 };
 
@@ -24,13 +26,15 @@ export const LoginScreen = ({ navigation }) => {
   const [isShownPassword, setIsShownPassword] = useState(true);
   const [focusedInput, setFocusedInput] = useState(null);
 
+  const dispatch = useDispatch();
+
   const keyboardHide = () => {
     setIsShownKeyboard(false);
     Keyboard.dismiss();
   };
 
   const onSubmit = () => {
-    console.log(form);
+    dispatch(authSignInUser(form))
     setForm(initialState);
 
     navigation.navigate("Home");
@@ -62,7 +66,7 @@ export const LoginScreen = ({ navigation }) => {
                       borderColor:
                         focusedInput === "email" ? "#FF6C00" : "#E8E8E8",
                     }}
-                    value={form.email}
+                    value={form.userEmail}
                     placeholder="Адреса електронної пошти"
                     placeholderTextColor="#BDBDBD"
                     onFocus={() => {
@@ -70,7 +74,7 @@ export const LoginScreen = ({ navigation }) => {
                       handleInputFocus("email");
                     }}
                     onChangeText={(value) =>
-                      setForm((prevState) => ({ ...prevState, email: value }))
+                      setForm((prevState) => ({ ...prevState, userEmail: value }))
                     }
                   />
 

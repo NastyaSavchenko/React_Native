@@ -6,13 +6,12 @@ import { TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
 
 import { RegistrationScreen } from "./screens/auth/RegistrationScreen";
 import { LoginScreen } from "./screens/auth/LoginScreen";
 import { Home } from "./screens/Home";
 
-import { InfoScreen } from "./screens/info/InfoScreen";
+import { PostsScreen } from "./screens/main/PostsScreen";
 import { CreatePostsScreen } from "./screens/main/CreatePostsScreen";
 import { ProfileScreen } from "./screens/main/ProfileScreen";
 
@@ -69,17 +68,10 @@ export const useRoute = (Auth) => {
               color={focused ? "#ffffff" : "#BDBDBD"}
             />
           ),
-
           headerShown: false,
-
-          headerRight: () => (
-            <TouchableOpacity style={{ marginRight: 16 }} activeOpacity={0.8}>
-              <MaterialIcons name="logout" size={24} color="#BDBDBD" />
-            </TouchableOpacity>
-          ),
         }}
-        name="InfoScreen"
-        component={InfoScreen}
+        name="Posts"
+        component={PostsScreen}
       />
       <MainTabs.Screen
         options={{
@@ -91,12 +83,14 @@ export const useRoute = (Auth) => {
             />
           ),
           headerLeft: () => (
-            <TouchableOpacity style={{ marginLeft: 20 }}>
+            <TouchableOpacity
+              style={{ marginLeft: 20 }}
+            >
               <Ionicons name="arrow-back" size={24} color="#BDBDBD" />
             </TouchableOpacity>
           ),
         }}
-        name="Create"
+        name="Створити публікацію"
         component={CreatePostsScreen}
       />
       <MainTabs.Screen

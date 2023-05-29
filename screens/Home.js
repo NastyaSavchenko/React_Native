@@ -44,7 +44,7 @@ export const Home = ({ navigation }) => {
           ),
           headerShown: false,
         }}
-        name="Публікації"
+        name="Posts"
         component={PostsScreen}
       />
       <MainTabs.Screen
@@ -55,11 +55,6 @@ export const Home = ({ navigation }) => {
               size={focused ? 18 : 24}
               color={focused ? "#ffffff" : "#BDBDBD"}
             />
-          ),
-          headerLeft: () => (
-            <TouchableOpacity style={{ marginLeft: 20 }}>
-              <Ionicons name="arrow-back" size={24} color="#BDBDBD" />
-            </TouchableOpacity>
           ),
           headerTitleAlign: "center",
           headerTitleStyle: {
@@ -89,4 +84,3 @@ export const Home = ({ navigation }) => {
     </MainTabs.Navigator>
   );
 };
-

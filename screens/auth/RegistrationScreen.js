@@ -10,15 +10,17 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
+import { useDispatch } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
 import { useState } from "react";
+import { authSignUpUser } from "../../redux/auth/authOperations";
 import { Background } from "../../components/Background";
 import { MainBtn } from "../../components/MainBtn";
 
 const initialState = {
   avatar: null,
-  login: "",
-  email: "",
+  nickname: "",
+  userEmail: "",
   password: "",
 };
 
@@ -28,14 +30,16 @@ export const RegistrationScreen = ({ navigation }) => {
   const [isShownPassword, setIsShownPassword] = useState(true);
   const [focusedInput, setFocusedInput] = useState(null);
 
+  const dispatch = useDispatch();
+
   const keyboardHide = () => {
     setIsShownKeyboard(false);
     Keyboard.dismiss();
   };
 
   const onSubmit = () => {
-    console.log(form);
     setForm(initialState);
+    dispatch(authSignUpUser(form))
     navigation.navigate("Home");
   };
 
@@ -74,7 +78,7 @@ export const RegistrationScreen = ({ navigation }) => {
                       borderColor:
                         focusedInput === "login" ? "#FF6C00" : "#E8E8E8",
                     }}
-                    value={form.login}
+                    value={form.nickname}
                     placeholder="Логін"
                     placeholderTextColor="#BDBDBD"
                     onFocus={() => {
@@ -82,7 +86,7 @@ export const RegistrationScreen = ({ navigation }) => {
                       handleInputFocus("login");
                     }}
                     onChangeText={(value) =>
-                      setForm((prevState) => ({ ...prevState, login: value }))
+                      setForm((prevState) => ({ ...prevState, nickname: value }))
                     }
                   />
                   <TextInput
@@ -92,7 +96,7 @@ export const RegistrationScreen = ({ navigation }) => {
                       borderColor:
                         focusedInput === "email" ? "#FF6C00" : "#E8E8E8",
                     }}
-                    value={form.email}
+                    value={form.userEmail}
                     placeholder="Адреса електронної пошти"
                     placeholderTextColor="#BDBDBD"
                     onFocus={() => {
@@ -100,7 +104,7 @@ export const RegistrationScreen = ({ navigation }) => {
                       handleInputFocus("email");
                     }}
                     onChangeText={(value) =>
-                      setForm((prevState) => ({ ...prevState, email: value }))
+                      setForm((prevState) => ({ ...prevState, userEmail: value }))
                     }
                   />
                   <View

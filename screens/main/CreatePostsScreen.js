@@ -3,6 +3,13 @@ import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
 import { Camera } from "expo-camera";
 
+import { db, storage } from "../../firebase/config";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { collection, addDoc } from "firebase/firestore";
+
+import { useSelector } from "react-redux";
+import { selectUser } from "../../redux/auth/authSelectors";
+
 import {
   StyleSheet,
   KeyboardAvoidingView,
@@ -13,25 +20,25 @@ import {
   Text,
   TextInput,
   Keyboard,
-  Alert,
 } from "react-native";
 
 import { MaterialIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 
 export const CreatePostsScreen = ({ navigation }) => {
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
-  const [cameraRef, setCameraRef] = useState(null);
-  const [photoUri, setPhotoUri] = useState(null);
-  const [hasCameraPermission, setHasCameraPermission] = useState(null);
-  const [locationData, setLocationData] = useState(null);
-  const [titleText, setTitleText] = useState("");
-  const [placeText, setPlaceText] = useState("");
-  const [error, setError] = useState(null);
-  const isDataComplete = photoUri && titleText && placeText;
+  const { id, email, nickname, avatar } = useSelector(selectUser);
+  const [isShownKeyboard, setIsShownKeyboard] = useState(false);
+  const [camera, setCamera] = useState(null);
+  const [photo, setPhoto] = useState(null);
+  const [hasPermission, setHasPermission] = useState(null);
+  const [location, setLocation] = useState(null);
+  const [title, setTitle] = useState("");
+  const [place, setPlace] = useState("");
+  const [error, setError] = useState("");
+  const isDataComplete = photo && title && place;
 
-  const hideKeyboard = () => {
-    setIsKeyboardVisible(false);
+  const keyboardHide = () => {
+    setIsShownKeyboard(false);
     Keyboard.dismiss();
   };
 
@@ -39,58 +46,77 @@ export const CreatePostsScreen = ({ navigation }) => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
       await MediaLibrary.requestPermissionsAsync();
-      setHasCameraPermission(status === "granted");
+      setHasPermission(status === "granted");
 
-      let location = await Location.requestForegroundPermissionsAsync();
-      if (location.status !== "granted") {
-        setError("Permission to access location was denied");
+      let loc = await Location.requestForegroundPermissionsAsync();
+      if (loc.status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
       }
     })();
   }, []);
 
   const takePhoto = async () => {
-    if (cameraRef) {
-      const photo = await cameraRef.takePictureAsync();
+    const photo = await camera.takePictureAsync();
 
-      setPhotoUri(photo.uri);
-      const location = await Location.getCurrentPositionAsync();
-      setLocationData(location);
+    setPhoto(photo.uri);
+
+    const location = await Location.getCurrentPositionAsync();
+    setLocation(location);
+  };
+
+  const uploadPhotoToServer = async () => {
+    const response = await fetch(photo);
+    const file = await response.blob();
+    const photoId = Date.now();
+    const imagesRef = ref(storage, `postImages/${photoId}`);
+
+    await uploadBytesResumable(imagesRef, file);
+    const url = await getDownloadURL(imagesRef);
+
+    return url;
+  };
+
+  const uploadPostToServer = async () => {
+    const photo = await uploadPhotoToServer();
+
+    try {
+      await addDoc(collection(db, "posts"), {
+        photo,
+        title,
+        place,
+        location: location.coords,
+        id,
+        email,
+        nickname,
+        avatar,
+        likes: 0,
+      });
+    } catch (error) {
+      setError("Error uploading post: ", error.message);
     }
   };
 
-  const onSubmit = () => {
-    if (!isDataComplete) {
-      Alert.alert("Будь ласка, завантажте фото та заповніть усі поля.");
-      return;
-    }
-
-    const data = {
-      photo: photoUri,
-      title: titleText,
-      place: placeText,
-    };
-    console.log(data);
-
-    setPhotoUri("");
-    setTitleText("");
-    setPlaceText("");
-
-    navigation.navigate("Публікації");
+  const onSubmit = async () => {
+    await uploadPostToServer();
+    navigation.navigate("Posts");
+    setPhoto("");
+    setTitle("");
+    setPlace("");
   };
 
   return (
-    <TouchableWithoutFeedback onPress={hideKeyboard}>
+    <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
         <KeyboardAvoidingView
           behavior={Platform.OS == "ios" ? "padding" : undefined}
         >
           <View style={styles.cameraContainer}>
-            {photoUri && (
+            {photo && (
               <View style={styles.photoContainer}>
-                <Image style={styles.photo} source={{ uri: photoUri }} />
+                <Image style={styles.photo} source={{ uri: photo }} />
               </View>
             )}
-            <Camera style={styles.camera} ref={setCameraRef}>
+            <Camera style={styles.camera} ref={setCamera}>
               <TouchableOpacity
                 style={styles.photoButtonContainer}
                 activeOpacity={0.8}
@@ -104,7 +130,7 @@ export const CreatePostsScreen = ({ navigation }) => {
               </TouchableOpacity>
             </Camera>
           </View>
-          {photoUri ? (
+          {photo ? (
             <Text style={styles.text}>Редагувати фото</Text>
           ) : (
             <Text style={styles.text}>Завантажте фото</Text>
@@ -113,9 +139,9 @@ export const CreatePostsScreen = ({ navigation }) => {
             style={styles.input}
             placeholder="Назва..."
             placeholderTextColor="#BDBDBD"
-            onFocus={() => setIsKeyboardVisible(true)}
-            value={titleText}
-            onChangeText={(text) => setTitleText(text)}
+            onFocus={() => setIsShownKeyboard(true)}
+            value={title}
+            onChangeText={(text) => setTitle(text)}
           />
           <View style={styles.locationContainer}>
             <Ionicons
@@ -128,9 +154,9 @@ export const CreatePostsScreen = ({ navigation }) => {
               style={{ ...styles.input, paddingLeft: 28 }}
               placeholder="Місцевість..."
               placeholderTextColor="#BDBDBD"
-              onFocus={() => setIsKeyboardVisible(true)}
-              value={placeText}
-              onChangeText={(text) => setPlaceText(text)}
+              onFocus={() => setIsShownKeyboard(true)}
+              value={place}
+              onChangeText={(text) => setPlace(text)}
             />
           </View>
           <View>
