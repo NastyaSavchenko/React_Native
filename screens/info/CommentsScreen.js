@@ -15,6 +15,7 @@ import {
   Keyboard,
   Platform,
   KeyboardAvoidingView,
+  ScrollView,
 } from "react-native";
 
 import { addDoc, collection, onSnapshot, query } from "firebase/firestore";
@@ -69,6 +70,7 @@ export const CommentsScreen = ({ route }) => {
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+
       <View style={styles.container}>
         <Image style={styles.photo} source={{ uri }} />
 
@@ -130,6 +132,7 @@ export const CommentsScreen = ({ route }) => {
           </View>
         </KeyboardAvoidingView>
       </View>
+
     </TouchableWithoutFeedback>
   );
 };
@@ -152,7 +155,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 32,
   },
-  comment: {},
   avatar: {
     width: 28,
     height: 28,

@@ -13,6 +13,7 @@ import {
 import { useDispatch } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
 import { useState } from "react";
+import { addAvatar } from "../../firebase/avatar";
 import { authSignUpUser } from "../../redux/auth/authOperations";
 import { Background } from "../../components/Background";
 import { MainBtn } from "../../components/MainBtn";
@@ -29,6 +30,7 @@ export const RegistrationScreen = ({ navigation }) => {
   const [isShownKeyboard, setIsShownKeyboard] = useState(false);
   const [isShownPassword, setIsShownPassword] = useState(true);
   const [focusedInput, setFocusedInput] = useState(null);
+  const [photo, setPhoto] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -39,12 +41,23 @@ export const RegistrationScreen = ({ navigation }) => {
 
   const onSubmit = () => {
     setForm(initialState);
-    dispatch(authSignUpUser(form))
+    dispatch(authSignUpUser(form));
     navigation.navigate("Home");
   };
 
   const handleInputFocus = (inputName) => {
     setFocusedInput(inputName);
+  };
+  
+  const changePhoto = async () => {
+    await addAvatar(setPhoto);
+
+    if (photo) {
+      setForm((prevState) => ({
+        ...prevState,
+        avatar: photo,
+      }));
+    }
   };
 
   return (
@@ -60,11 +73,15 @@ export const RegistrationScreen = ({ navigation }) => {
           >
             <View style={styles.box}>
               <View style={styles.avatarBox}>
-                <Image
-                  source={require("../../assets/img/ava.webp")}
-                  style={styles.avatar}
-                />
-                <TouchableOpacity style={styles.icon}>
+                {photo ? (
+                  <Image source={{ uri: photo }} style={styles.avatar} />
+                ) : (
+                  <Image
+                    source={require("../../assets/img/ava.webp")}
+                    style={styles.avatar}
+                  />
+                )}
+                <TouchableOpacity style={styles.icon} onPress={changePhoto}>
                   <AntDesign name="pluscircleo" size={24} color="#FF6C00" />
                 </TouchableOpacity>
               </View>
@@ -86,7 +103,10 @@ export const RegistrationScreen = ({ navigation }) => {
                       handleInputFocus("login");
                     }}
                     onChangeText={(value) =>
-                      setForm((prevState) => ({ ...prevState, nickname: value }))
+                      setForm((prevState) => ({
+                        ...prevState,
+                        nickname: value,
+                      }))
                     }
                   />
                   <TextInput
@@ -104,7 +124,10 @@ export const RegistrationScreen = ({ navigation }) => {
                       handleInputFocus("email");
                     }}
                     onChangeText={(value) =>
-                      setForm((prevState) => ({ ...prevState, userEmail: value }))
+                      setForm((prevState) => ({
+                        ...prevState,
+                        userEmail: value,
+                      }))
                     }
                   />
                   <View
